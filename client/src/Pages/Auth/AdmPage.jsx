@@ -126,6 +126,7 @@ const Submitadmdata = (e) => {
                                       </td> 
                                       <button type="button">Update</button>
                                       <button type="button">Update</button>
+                                    
 
                                       {/* <input type="text" className="Updateinput" />
                                       <button className="button">Update Details</button> */}
