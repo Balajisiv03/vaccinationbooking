@@ -125,7 +125,7 @@ const Submitadmdata = (e) => {
                                       <button type="button" className="handle-switch-btn" onClick={(vcentres)=>{deletedetail(val.vcentres)}}>Delete record</button>
                                       </td> 
                                       <button type="button">Update</button>
-                                      <button type="button">Update</button>
+                                   
                                     
 
                                       {/* <input type="text" className="Updateinput" />
