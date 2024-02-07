@@ -32,7 +32,6 @@ db.connect((err) => {
     const name=req.body.name;
     const email=req.body.email;
     const password=req.body.password;
-
     
     const sqlinsert=
     "insert into user (name,email,password) values(?,?,?)";
@@ -90,7 +89,7 @@ app.post("/login",(req,res)=>{
 
 
 //adminpage
-app.post("/data/insertdetails",(req,res)=>{ 
+app.post("/data/insertdetails",(req,res)=>{
     const cityname=req.body.cityname;
     const slot=req.body.slot;
     const vcentres=req.body.vcentres;
@@ -108,17 +107,6 @@ app.post("/data/insertdetails",(req,res)=>{
     });
 })
 
-// app.get("/data/getinsertdetails",(req,res)=>{
-//     const sqlgetinsertdetails="SELECT DISTINCT * FROM admin";
-//     db.query(sqlgetinsertdetails,(err,result)=>{
-//         if (err) {
-//             res.status(500).json({ error: err.message });
-//             return;
-//         }
-//        res.send(result);
-//     });
-// }   
-// )
 
 app.get("/data/getinsertdetails", (req, res) => {
     const sqlgetinsertdetails = "SELECT DISTINCT * FROM admin";
@@ -155,6 +143,12 @@ app.delete("/data/deletedetail/:vcentres", (req, res) => {
 
 app.post('/bookslot', (req, res) => {
     const { cityname, vcentres, slot } = req.body;
+
+    console.log('Request Body:', req.body);  // Log the entire request body
+    console.log('Received cityname:', cityname);
+    console.log('Received vcentres:', vcentres);
+    console.log('Received slot:', slot);
+
   
     if (!cityname || !vcentres || !slot) {
       return res.status(400).json({ error: 'Please provide all required fields' });
@@ -178,7 +172,7 @@ app.post('/bookslot', (req, res) => {
         return res.status(400).json({ error: 'Not enough slots available' });
       }
   
-      // Update the slot count in the database
+      // Updating slot count in the database
       const sqlUpdate = 'UPDATE admin SET slot = ? WHERE cityname = ? AND vcentres = ?';
   
       db.query(sqlUpdate, [availableSlots - slot, cityname, vcentres], (updateErr, updateResult) => {
@@ -193,21 +187,9 @@ app.post('/bookslot', (req, res) => {
   });
 
 
-
 app.listen(5001,()=>{
     console.log("app is running on 5001");
 });
-
-
-
-
-
-
-
-
-//  app.get("/",(req,res)=>{
-//     res.send("hello world");
-//  });
 
 
 

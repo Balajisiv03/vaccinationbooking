@@ -18,7 +18,7 @@ const[vcentres,setVcentres]=useState("");
 const[slot,setSlot]=useState("");
 const[dosagelist,setDosagelist]=useState([]);
 const [vcentresList, setVcentresList] = useState([]);
-
+const [bookingsuccess,setbookingsuccess]=useState(false);
 
 useEffect(() => {
   Axios.get('http://localhost:5001/data/getinsertdetails')
@@ -29,7 +29,7 @@ useEffect(() => {
     .catch((error) => {
       console.error('Error fetching data:', error);
     });
-},[setDosagelist]); // empty dependency array means this effect will run only once when the component mounts
+},[setDosagelist]);
 
 
 
@@ -38,17 +38,16 @@ useEffect(() => {
   const centresList=Array.from(new Set(dosagelist.map((item) => item.vcentres)));
   console.log('Vaccination Centres List:', centresList);
   setVcentresList(centresList);
-
 };
 
  // Function to handle slot booking
- const bookSlot = (selectedVcentre) => {
-  if (!cityname || !selectedVcentre || !slot) {
+ const bookSlot = (selectedvcentres) => {
+  if (!cityname || !selectedvcentres || !slot) {
     alert('Please fill in all fields');
     return;
   }
 
-  // Make a POST request to book the slot
+  //  a POST request to book the slot
   Axios.post('http://localhost:5001/bookslot', {
     cityname,
     vcentres,
@@ -65,6 +64,8 @@ useEffect(() => {
             : item
         )
       );
+
+      setbookingsuccess(true);
 
       // Clear the input fields
       setCityname('');
@@ -87,17 +88,17 @@ useEffect(() => {
                   <label htmlFor="name">
                     <h4>City Name</h4>
                     <input type="text" id="name" name="name" placeholder="Enter city name" style={{height: "30px"}}  
-                    onChange={(e)=>{setCityname(e.target.value)}}/>
+                    onChange={(e)=>{setCityname(e.target.value)}} required/>
                   </label> 
-                  <label htmlFor="dosdetails">
+                  <label htmlFor="slots">
                     <h4>No of slots</h4>
-                    <input type="number" id="dosdetails" name="dosdetails" placeholder="No of slot" style={{height: "30px"}}  
-                    onChange={(e)=>{setSlot(e.target.value)}}/>
+                    <input type="number" id="slots" name="slots" placeholder="No of slot" style={{height: "30px"}}  
+                    onChange={(e)=>{setSlot(e.target.value)}} required/>
                   </label>
                   <label htmlFor="centres">
                     <h3>Vaccination centres</h3>
                     <select id="centres" name="centres" style={{height: "30px",width: "100%"}}
-                      onClick={loadVcentresList} onChange={(e)=>setVcentres(e.target.value)}>
+                      onClick={loadVcentresList} onChange={(e)=>setVcentres(e.target.value)} required>
                         <option value="">Select a vaccination centre</option>
                         {vcentresList.map((vcentres,index)=>(
                              <option key={index} value={vcentres}>{vcentres}</option> 
@@ -111,6 +112,7 @@ useEffect(() => {
               </div>
               <div>
               <div className='details-table-container'>
+                   {bookingsuccess && (<p style={{color: "blue"}}>Slot booked successfully</p>)}
                     <h2>Details Table</h2>
                     <table className='details-table'>
                       <thead>
@@ -126,7 +128,7 @@ useEffect(() => {
                               <tr key={id}>
                                   <td>{val.cityname}</td>
                                   <td>{val.vcentres}</td>
-                                  <td>{val.slot} </td>
+                                  <td>{val.slot}</td>
                                   {/* <input type="text" className="Updateinput" />
                                   <button className="button">Update Details</button> */}
                               </tr>

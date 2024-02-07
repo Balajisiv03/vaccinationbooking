@@ -17,6 +17,10 @@ const[slot,setSlot]=useState("");
 const[dosagelist,setDosagelist]=useState([]);
 const[showdetails,setShowdetails]=useState(false);
 
+//message notification
+const[adddetails,setadddetails]=useState(false);
+const[deletemsg,setdeletemsg]=useState(false);
+
 
 function showlist(){
   if(!showdetails){
@@ -42,11 +46,12 @@ function deletedetail(vcentres) {
       setDosagelist(dosagelist.filter((val)=>{
         return val.vcentres!==vcentres;
       }))
-      console.log(response.data); // Log the response data if needed
+      console.log(response.data);
+      setdeletemsg(true);
     })
     .catch(error => {
-      console.error('Error:', error.message); // Log the error message
-      console.error('Status Code:', error.response.status); // Log the HTTP status code
+      console.error('Error:', error.message);
+      console.error('Status Code:', error.response.status); 
     });
 }
 
@@ -68,6 +73,8 @@ const Submitadmdata = (e) => {
     .catch(error => {
       console.error("Error inserting data:", error);
     });
+
+    setadddetails(true);
 };
 
   return (
@@ -100,7 +107,8 @@ const Submitadmdata = (e) => {
                 <div style={{display:"flex",justifyContent:'space-between', marginTop:"10px", borderRadius:"10px"}}>
                  <button type="submit" onClick={handlebtn} className="handle-switch-btn">Logout</button>
                  <button type="button" className="handle-switch-btn" onClick={showlist}>{showdetails?"Hide Details":"Show Details"}</button>
-               </div>
+                </div>
+                <div>{adddetails && (<p style={{color: "blue", textAlign: "center"}}>Details added successfully</p>)}</div>
                <div>
                    {showdetails && (
                     <div className='details-table-container'>
@@ -123,16 +131,14 @@ const Submitadmdata = (e) => {
                                       <td>{val.slot} </td>
                                       <td>
                                       <button type="button" className="handle-switch-btn" onClick={(vcentres)=>{deletedetail(val.vcentres)}}>Delete record</button>
-                                      </td> 
-                                      <button type="button">Update</button>
-                                   
-                                    
+                                      </td>
 
                                       {/* <input type="text" className="Updateinput" />
                                       <button className="button">Update Details</button> */}
                                   </tr>
                               );
-                              })}  
+                              })} 
+                            <div>{deletemsg && (<p style={{color: "blue", textAlign: "center"}}>Centre deleted successfully</p>)} </div>
                           </tbody>
                         </table>
                      </div>)}
