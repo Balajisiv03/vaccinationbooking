@@ -139,6 +139,7 @@ const Submitadmdata = (e) => {
                               );
                               })} 
                             <div>{deletemsg && (<p style={{color: "blue", textAlign: "center"}}>Centre deleted successfully</p>)} </div>
+                            <div>{deletemsg && (<p style={{color: "blue", textAlign: "center"}}>Centre deleted successfully</p>)} </div>
                           </tbody>
                         </table>
                      </div>)}
