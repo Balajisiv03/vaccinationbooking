@@ -58,6 +58,10 @@ const AdmPage = () => {
       alert("Please fill in all fields");
       return;
     }
+    if (slot <= 0) {
+      alert("Please provide a valid slot(atleast 1 slot)");
+      return;
+    }
     console.log("Form data:", { cityname, vcentres, slot });
 
     Axios.post("http://localhost:5001/data/insertdetails", {
@@ -81,6 +85,7 @@ const AdmPage = () => {
         <div className="auth-container-2">
           <h1>Admin Page</h1>
           <form onSubmit={Submitadmdata}>
+            <h2>Add slot</h2>
             <div>
               <label htmlFor="name">
                 <h4>City Name</h4>
@@ -188,9 +193,6 @@ const AdmPage = () => {
                                 Delete record
                               </button>
                             </td>
-
-                            {/* <input type="text" className="Updateinput" />
-                                      <button className="button">Update Details</button> */}
                           </tr>
                         );
                       })}

@@ -16,6 +16,7 @@ const HomePage = () => {
   const [slot, setSlot] = useState("");
   const [dosagelist, setDosagelist] = useState([]);
   const [vcentresList, setVcentresList] = useState([]);
+  const [cnameList, setCnameList] = useState([]);
   const [bookingsuccess, setbookingsuccess] = useState(false);
 
   useEffect(() => {
@@ -26,32 +27,39 @@ const HomePage = () => {
         const centresList = Array.from(
           new Set(response.data.map((item) => item.vcentres))
         );
+        const cityList = Array.from(
+          new Set(response.data.map((item) => item.cityname))
+        );
         console.log("Vaccination Centres List:", centresList);
+        console.log("city  List:", cityList);
         setVcentresList(centresList);
         console.log(vcentresList);
+        setCnameList(cityList);
+        console.log(cnameList);
       })
       .catch((error) => {
         console.error("Error fetching data:", error);
       });
   }, []);
 
-  // const loadVcentresList = () => {
-  //   // Fetch the list of vaccination centers only when the dropdown is clicked
-  //   const centresList = Array.from(
-  //     new Set(dosagelist.map((item) => item.vcentres))
-  //   );
-  //   console.log("Vaccination Centres List:", centresList);
-  //   setVcentresList(centresList);
-  // };
-
-  // Function to handle slot booking
   const bookSlot = (selectedvcentres) => {
     if (!cityname || !selectedvcentres || !slot) {
       alert("Please fill in all fields");
       return;
     }
 
-    //  a POST request to book the slot
+    const selectedCenter = dosagelist.find(
+      (item) => item.vcentres === selectedvcentres
+    );
+
+    // Check if the provided slot is greater than the available slot
+    if (selectedCenter && parseInt(slot, 10) > selectedCenter.slot) {
+      alert(
+        "Provide a valid slot. The requested slots exceed the available slots."
+      );
+      return;
+    }
+
     Axios.post("http://localhost:5001/bookslot", {
       cityname,
       vcentres,
@@ -60,18 +68,16 @@ const HomePage = () => {
       .then((response) => {
         console.log("Slot booked successfully:", response.data);
 
-        // Update the dosagelist after successful booking
         setDosagelist((prevDosagelist) =>
-          prevDosagelist.map((item) =>
+          prevDosagelist?.map((item) =>
             item.vcentres === vcentres
-              ? { ...item, slot: item.slot - slot } // Decrease the slot count for the booked center
+              ? { ...item, slot: item.slot - slot }
               : item
           )
         );
 
         setbookingsuccess(true);
 
-        // Clear the input fields
         setCityname("");
         setVcentres("");
         setSlot("");
@@ -88,34 +94,22 @@ const HomePage = () => {
         <form>
           <div>
             <label htmlFor="name">
-              <h4>City Name</h4>
-              <input
-                type="text"
+              <h3>City Name</h3>
+              <select
                 id="name"
-                value={cityname}
                 name="name"
-                placeholder="Enter city name"
-                style={{ height: "30px" }}
-                onChange={(e) => {
-                  setCityname(e.target.value);
-                }}
+                value={cityname}
+                style={{ height: "30px", width: "100%" }}
+                onChange={(e) => setCityname(e.target.value)}
                 required
-              />
-            </label>
-            <label htmlFor="slots">
-              <h4>No of slots</h4>
-              <input
-                type="number"
-                id="slots"
-                value={slot}
-                name="slots"
-                placeholder="No of slot"
-                style={{ height: "30px" }}
-                onChange={(e) => {
-                  setSlot(e.target.value);
-                }}
-                required
-              />
+              >
+                <option value="">Select a city name</option>
+                {cnameList.map((cityname, index) => (
+                  <option key={index} value={cityname}>
+                    {cityname}
+                  </option>
+                ))}
+              </select>
             </label>
             <label htmlFor="centres">
               <h3>Vaccination centres</h3>
@@ -135,6 +129,21 @@ const HomePage = () => {
                   </option>
                 ))}
               </select>
+            </label>
+            <label htmlFor="slots">
+              <h4>No of slots</h4>
+              <input
+                type="number"
+                id="slots"
+                value={slot}
+                name="slots"
+                placeholder="No of slot"
+                style={{ height: "30px" }}
+                onChange={(e) => {
+                  setSlot(e.target.value);
+                }}
+                required
+              />
             </label>
           </div>
           <div
