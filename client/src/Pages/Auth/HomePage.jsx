@@ -52,7 +52,6 @@ const HomePage = () => {
       (item) => item.vcentres === selectedvcentres
     );
 
-    // Check if the provided slot is greater than the available slot
     if (selectedCenter && parseInt(slot, 10) > selectedCenter.slot) {
       alert(
         "Provide a valid slot. The requested slots exceed the available slots."
